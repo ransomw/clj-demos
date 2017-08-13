@@ -1,0 +1,17 @@
+*~
+*.class
+*.jar
+/setsail/.lein-*
+/setsail/.nrepl-port
+/setsail/.repl
+/setsail/checkouts/
+/setsail/classes/
+/setsail/lib/
+/setsail/log/
+/setsail/out/
+/setsail/resources/public/js/compiled/**
+/setsail/resources/devcards/js/compiled/**
+/setsail/target/
+/setsail/figwheel_server.log
+/setsail/pom.xml
+/setsail/pom.xml.asc
