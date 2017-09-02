@@ -1,4 +1,4 @@
-(defproject emcg "0.1.0-SNAPSHOT"
+(defproject setsail "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -34,6 +34,9 @@
                  [lein-doo "0.1.6"]
                  [devcards "0.2.3"]
                  [reagent "0.7.0"]
+                 [garden "1.3.2"]
+                 [hawk "0.2.11"]
+                 [sablono "0.8.0"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.3"]
@@ -41,7 +44,8 @@
 
   :min-lein-version "2.6.1"
 
-  :source-paths ["src/clj" "src/cljs" "src/cljc"]
+  :source-paths ["src/clj" "src/cljs" "src/cljc"
+                 "styles/clj" "styles/cljs" "styles/cljc"]
 
   :test-paths ["test/clj" "test/cljc"]
 
@@ -50,10 +54,10 @@
    "resources/public/js"
    "resources/devcards/js"]
 
-  :uberjar-name "emcg.jar"
+  :uberjar-name "setsail.jar"
 
   ;; Use `lein run` if you just want to start a HTTP server, without figwheel
-  :main "emcg.server"
+  :main "setsail.server"
 
   ;; nREPL by default starts in the :main namespace, we want to start in `user`
   ;; because that's where our development helper functions like (run) and
@@ -68,15 +72,17 @@
                 ;; clj test env keeps local db
                 ;; cljs production env connects to full backend
                 :source-paths ["src/cljs" "src/cljc"
-                               "env/prod/cljs" "env/test/clj"]
+                               "env/prod/cljs" "env/test/clj"
+                               "styles/cljs" "styles/cljc"
+                               ]
                 :figwheel true
                 ;; Alternatively,
-                ;; :figwheel {:on-jsload "emcg.core/on-figwheel-reload"}
-                :compiler {:main emcg.core
+                ;; :figwheel {:on-jsload "setsail.core/on-figwheel-reload"}
+                :compiler {:main setsail.core
                            :asset-path
                            "js/compiled/out"
                            :output-to
-                           "resources/public/js/compiled/emcg.js"
+                           "resources/public/js/compiled/setsail.js"
                            :output-dir
                            "resources/public/js/compiled/out"
                            :source-map-timestamp true}}
@@ -84,33 +90,36 @@
                {:id "devcards"
                 :source-paths ["src/cljs" "src/cljc"
                                "env/test/cljs" "env/test/clj"
+                               "styles/cljs" "styles/cljc"
                                "test/cljs" "test/cljc"]
                 :figwheel {:devcards true}
                 :compiler
                 {
-                 :main emcg.devcards
+                 :main setsail.devcards
                  :asset-path
                  "js/compiled/devcards_out"
                  :output-to
                  ;; matches http-server-root for figwheel
-                 "resources/devcards/js/compiled/emcg_devcards.js"
+                 "resources/devcards/js/compiled/setsail_devcards.js"
                  :output-dir
                  "resources/devcards/js/compiled/devcards_out"
                  :source-map-timestamp true}}
 
                {:id "test"
                 :source-paths ["src/cljs" "test/cljs"
+                               "styles/cljs" "styles/cljc"
                                "src/cljc" "test/cljc"]
                 :compiler {:output-to "resources/public/js/compiled/testable.js"
-                           :main emcg.test-runner
+                           :main setsail.test-runner
                            :optimizations :none}}
 
                {:id "min"
                 :source-paths ["src/cljs" "src/cljc"
+                               "styles/cljs" "styles/cljc"
                                "env/prod/cljs"]
                 :jar true
-                :compiler {:main emcg.core
-                           :output-to "resources/public/js/compiled/emcg.js"
+                :compiler {:main setsail.core
+                           :output-to "resources/public/js/compiled/setsail.js"
                            :output-dir "target"
                            :source-map-timestamp true
                            :optimizations :advanced
@@ -124,7 +133,10 @@
   :figwheel {;; :http-server-root "public"       ;; serve static assets from resources/public/
              ;; :server-port 3449                ;; default
              ;; :server-ip "127.0.0.1"           ;; default
-             :css-dirs ["resources/public/css"]  ;; watch and update CSS
+
+             ;; watch and update CSS
+             :css-dirs ["resources/public/css"
+                        "resources/public/css/compiled"]
 
              ;; Instead of booting a separate server on its own port, we embed
              ;; the server ring handler inside figwheel's http-kit server, so

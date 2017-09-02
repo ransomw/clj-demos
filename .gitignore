@@ -10,6 +10,7 @@
 /setsail/log/
 /setsail/out/
 /setsail/resources/public/js/compiled/**
+/setsail/resources/public/css/compiled/**
 /setsail/resources/devcards/js/compiled/**
 /setsail/target/
 /setsail/figwheel_server.log

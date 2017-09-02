@@ -1,3 +1,0 @@
-(ns emcg.devcards
-  (:require
-   ))
