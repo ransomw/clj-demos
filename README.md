@@ -1,8 +1,8 @@
-### clj-demos
+## clj-demos
 
 Clojure project templates and sandboxing
 
-##### `setsail/`
+### `setsail/`
 
 extracted from [emo-mcg](http://github.com/ransomw/emo-mcg),
 this project was originally derived from the
@@ -37,6 +37,9 @@ it demonstrates
 * `src/clj/garden_build/` — a simple sandboxed styles build
   similar to
   [garden-watcher](http://github.com/plexus/garden-watcher)
+* the
+  [Om](https://github.com/omcljs/om)
+  React wrapper
 
 it is _not_ suitable as an application template due to (at least)
 * patterns for [figwheel](http://github.com/bhauman/lein-figwheel)
@@ -64,3 +67,43 @@ run the functions defined in `dev/user.clj`
 to reset the database and run the application via
 [figwheel](http://github.com/bhauman/lein-figwheel).
 then point a browser to `localhost:3449`.
+
+### `feels/`
+
+express your
+[feels](http://www.urbandictionary.com/define.php?term=Feels)
+with handles to interactivly update an
+[emoji](https://en.wikipedia.org/wiki/Emoji)-like pictogram.
+
+this project is based on a
+[Chestnut](http://github.com/plexus/chestnut) 0.15.x
+template and uses a
+[system](https://github.com/danielsz/system)
+of
+[component](https://github.com/stuartsierra/component)s
+to manage REPL state.
+
+it currently demonstrates
+
+* clojurescript's
+  [support](https://clojurescript.org/reference/javascript-module-support)
+  for javascript modules
+* the
+  [rum](https://github.com/tonsky/rum)
+  React wrapper
+* [devcards](https://github.com/bhauman/devcards/)
+  for a REPL-like UI development experience
+* testing
+  [ring sessions](https://github.com/ring-clojure/ring/wiki/Sessions)
+  sans
+  [peridot](https://github.com/xeqi/peridot)
+  via
+  [dynamic binding](https://www.braveclojure.com/zombie-metaphysics/#Dynamic_Binding)
+
+##### status
+
+barely started.
+
+if you'd like to see the [current status of the] emoji creator,
+fire up a `lein repl` and run `(go-devcards)` — but be forewarned:
+the experience is underwhelming.

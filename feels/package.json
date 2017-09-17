@@ -1,0 +1,21 @@
+{
+  "name": "emoji-draw",
+  "version": "0.0.1",
+  "description": "emoji drawing api",
+  "dependencies": {
+    "fabric": "^1.7.18",
+    "ramda": "0.24.1"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "watchify": "^3.9.0",
+    "derequire": "^2.0.6"
+  },
+  "scripts": {
+    "build": "browserify src/js/emoji.js --standalone Emoji | derequire > target/emoji-bundle.js",
+    "build:cts": "watchify src/js/emoji.js --transform derequire --standalone Emoji -o target/emoji-bundle.js"
+  },
+  "engines": {
+    "node": "8.3.1"
+  }
+}
