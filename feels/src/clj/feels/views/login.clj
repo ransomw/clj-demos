@@ -3,6 +3,16 @@
    [rum.core :as rum]
    ))
 
+(rum/defc register-form < rum/static [token]
+  [:form {:action "/register" :method "POST"}
+   [:input {:type "text" :name "username" :placeholder "username"}]
+   [:input {:type "password" :name "password" :placeholder "password"}]
+   [:input {:type "hidden" :name "__anti-forgery-token"
+            :value token
+            }]
+   [:input {:type "submit"} "login"]
+   ])
+
 (rum/defc login-form < rum/static [token]
   [:form {:action "/login" :method "POST"}
    [:input {:type "text" :name "username" :placeholder "username"}]
@@ -21,6 +31,9 @@
             :content "width=device-width, initial-scale=1"}]
     ]
    [:body
+    [:h3 "register"]
+    (register-form token)
+    [:h3 "login"]
     (login-form token)
     ]
    ])

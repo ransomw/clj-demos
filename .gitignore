@@ -27,6 +27,7 @@ pom.xml.asc
 /feels/log/
 /feels/out/
 /feels/resources/public/js/compiled/**
+/feels/resources/public/css/compiled/**
 /feels/resources/devcards/js/compiled/**
 /feels/target/
 /feels/node_modules/

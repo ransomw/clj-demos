@@ -3,9 +3,10 @@
    [clojure.java.io :as io]
    [compojure.core :refer [ANY GET PUT POST DELETE routes context]]
    [compojure.route :refer [resources]]
-   [ring.util.response :refer [response redirect]]
+   [ring.util.response :refer [response redirect status]]
    [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
 
+   [feels.db.core :as db]
    [feels.views.login :refer [make-login-page-str]]
    ))
 
@@ -27,7 +28,49 @@
         (assoc :headers html-headers)))
    ))
 
-(defn home-routes [endpoint]
+(defn auth-routes [{db :db}]
+  (routes
+   (context
+    "/" {session :session}
+    (GET
+     "/login" _
+     (-> (make-login-page-str *anti-forgery-token*)
+         response
+         (assoc :headers html-headers)))
+    (POST
+     "/login" [username password]
+     (let [user (db/get-user db username)]
+       (if (and user
+                (db/check-pass db username password))
+         (let [user-id (:id user)
+               login-session (assoc session :user-id user-id)]
+           (-> (redirect "/")
+               (assoc :session login-session)))
+         (-> (make-login-page-str *anti-forgery-token*)
+             response
+             (status 401)
+             (assoc :headers html-headers))
+         )))
+    (POST
+     "/register" [username password]
+     (let [user-id (db/add-user! db username password)]
+       (if user-id
+         (let [login-session (assoc session :user-id user-id)]
+           (-> (redirect "/")
+               (assoc :session login-session)))
+         (-> (make-login-page-str *anti-forgery-token*)
+             response
+             (status 500)
+             (assoc :headers html-headers))
+         )))
+    (GET
+     "/logout" _
+     (let [session (assoc session :user-id nil)]
+       (-> (redirect "/")
+           (assoc :session session))))
+    )))
+
+(defn home-routes [{db :db :as endpoint}]
   (routes
    (context
     "/" {{:keys [user-id]} :session}
@@ -36,20 +79,6 @@
       (GET
        "/" _
        (redirect "/login"))))
-   (GET
-    "/login" {{:keys [user-id] :as session} :session}
-      (-> (make-login-page-str *anti-forgery-token*)
-          response
-          (assoc :headers html-headers)))
-   (POST
-    "/login" {session :session}
-    (let [session (assoc session :user-id 1)]
-      (-> (redirect "/")
-          (assoc :session session))))
-   (GET
-    "/logout" {session :session}
-    (let [session (assoc session :user-id nil)]
-      (-> (redirect "/")
-          (assoc :session session))))
+   (auth-routes {:db db})
    (resources "/")
    ))

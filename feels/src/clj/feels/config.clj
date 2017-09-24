@@ -11,4 +11,12 @@
   {:http-port  (Integer. (or (env :port) 10555))
    :middleware [[wrap-defaults site-defaults]
                 ;; wrap-with-logger
-                wrap-gzip]})
+                wrap-gzip]
+   ;; pretty-print format from clojure.jdbc docs
+   :db-spec {:vendor "postgresql"
+             :name "feels"
+             :host "localhost"
+             :user "sandy"
+             :password "abc123"
+             }
+   })

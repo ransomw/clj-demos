@@ -17,11 +17,20 @@
    [org.clojure/tools.namespace "0.2.11"]
    [http-kit "2.2.0"]
    [rum "0.10.8"]
-   [lambdaisland/garden-watcher "0.3.1"]
    ;; added
    [devcards "0.2.3"]
    [ring/ring-mock "0.3.1"]
    [hickory "0.7.1"]
+   [postgresql "9.3-1102.jdbc41"]
+   ;; [funcool/clojure.jdbc "0.9.0"]
+   [com.layerware/hugsql "0.4.7"]
+   [com.layerware/hugsql-adapter-clojure-jdbc "0.4.7"]
+   [venantius/accountant "0.2.0"]
+   [bidi "2.1.2"]
+   [hawk "0.2.11"]
+   [garden "1.3.2"]
+   [com.andrewmcveigh/cljs-time "0.5.0"]
+   [clj-time "0.14.0"]
    ]
 
   :plugins
@@ -32,7 +41,8 @@
 
   :min-lein-version "2.6.1"
 
-  :source-paths ["src/clj" "src/cljs" "src/cljc"]
+  :source-paths ["src/clj" "src/cljs" "src/cljc"
+                 "styles/clj" "styles/cljs" "styles/cljc"]
 
   :test-paths ["test/clj" "test/cljc"]
 
@@ -57,7 +67,8 @@
   {:builds
    [
     {:id "app"
-     :source-paths ["src/cljs" "src/cljc" "dev"]
+     :source-paths ["src/cljs" "src/cljc" "dev"
+                    "styles/cljs" "styles/cljc"]
 
      :figwheel {:on-jsload "feels.system/reset"}
 
@@ -78,7 +89,8 @@
 
 
     {:id "devcards"
-     :source-paths  ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
+     :source-paths  ["src/cljs" "test/cljs" "src/cljc" "test/cljc"
+                     "styles/cljs" "styles/cljc"]
      :figwheel {:devcards true}
      :compiler
      {

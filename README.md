@@ -72,7 +72,7 @@ then point a browser to `localhost:3449`.
 
 express your
 [feels](http://www.urbandictionary.com/define.php?term=Feels)
-with handles to interactivly update an
+with handles to interactively update an
 [emoji](https://en.wikipedia.org/wiki/Emoji)-like pictogram.
 
 this project is based on a
@@ -99,11 +99,18 @@ it currently demonstrates
   [peridot](https://github.com/xeqi/peridot)
   via
   [dynamic binding](https://www.braveclojure.com/zombie-metaphysics/#Dynamic_Binding)
+* client-side routing with
+  [bidi](http://github.com/juxt/bidi)
+  and
+  [accountant](http://github.com/venantius/accountant)
+
 
 ##### status
 
-barely started.
+laying foundations, connecting pipes.
 
-if you'd like to see the [current status of the] emoji creator,
-fire up a `lein repl` and run `(go-devcards)` — but be forewarned:
-the experience is underwhelming.
+if you'd like to see the [current status of the] emoji creator
+or calendar view, fire up a `lein repl`, run `(go-devcards)`,
+and point the browser to `localhost:3449`.
+for everything else, `(stop)`, `(go)`, and yer port is `10555`
+— but be forewarned: the user experiences are underwhelming.

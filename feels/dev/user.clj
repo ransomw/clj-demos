@@ -7,19 +7,29 @@
    [reloaded.repl :refer [system init]]
    [ring.middleware.reload :refer [wrap-reload]]
    [figwheel-sidecar.repl-api :as figwheel]
-   [garden-watcher.core :refer [new-garden-watcher]]
    [clojure.test :refer [run-tests test-vars]]
 
+   [garden-build.component :refer [new-garden-build]]
    [feels.application]
    [feels.config :refer [config]]
    [feels.routes-test]
+   [feels.db-test]
    ))
 
 (defn dev-system []
   (assoc (feels.application/app-system (config))
     :figwheel-system (fw-sys/figwheel-system (fw-config/fetch-config))
     :css-watcher (fw-sys/css-watcher {:watch-paths ["resources/public/css"]})
-    :garden-watcher (new-garden-watcher ['feels.styles])))
+    :garden-build
+    (new-garden-build
+     {:source-paths ["styles/clj/" "styles/cljc"]
+      :style-ns 'styles.feels.core
+      }
+     {
+      :output-to "resources/public/css/compiled/garden-main.css"
+      :pretty-print? true
+      })
+    ))
 
 (defn devcards-system []
   (assoc
@@ -64,5 +74,8 @@
            (do (println "loading" test-ns)
                (require test-ns :reload-all)))
            (run-tests test-ns))
-       ['feels.routes-test])
+       [
+        'feels.db-test
+        'feels.routes-test
+        ])
   )
