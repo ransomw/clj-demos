@@ -7,9 +7,6 @@
 
 (rum/defcs emoji-face [_ props]
   [:div {:style (clj->js {:dislay "flex" :flexDirection "column"})}
-   [:div
-    [:span (str props)]
-    ]
    [:canvas {:width 300 :height 300
              :style (clj->js {:border "solid 1px black"})
              :ref (fn [el]

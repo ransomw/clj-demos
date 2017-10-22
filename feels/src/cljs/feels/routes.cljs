@@ -2,8 +2,6 @@
   (:require
    [bidi.bidi :as bidi]
    [accountant.core :as accountant]
-
-   [feels.state :refer [curr-route]]
    ))
 
 (defn make-routes []
@@ -13,19 +11,26 @@
     }
    ])
 
-(defn init-routes []
-  (let [app-routes (make-routes)]
+(defmulti control (fn [action _ _] action))
+
+(defmethod control :init [_ [route] _]
+  {:state (bidi/match-route (make-routes) "/")})
+
+(defmethod control :push [_ [route] _]
+  {:state route})
+
+(defn start-router! [on-set-page]
+  (let [routes (make-routes)]
     (accountant/configure-navigation!
      {:nav-handler
       (fn [path]
         (println "in nav-handler, path:" path)
-        (reset!
-         curr-route
-         (bidi/match-route app-routes path)
+        (on-set-page
+         (bidi/match-route routes path)
          )
         )
       :path-exists?
       (fn [path]
-        (boolean (bidi/match-route app-routes path))
-        )})
-    ))
+        (boolean (bidi/match-route routes path))
+        )}
+     )))

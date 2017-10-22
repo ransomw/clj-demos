@@ -89,8 +89,10 @@ it currently demonstrates
   [support](https://clojurescript.org/reference/javascript-module-support)
   for javascript modules
 * the
-  [rum](https://github.com/tonsky/rum)
+  [Rum](https://github.com/tonsky/rum)
   React wrapper
+* [Citrus](https://github.com/roman01la/citrus),
+  a Redux-like state management library for Rum
 * [devcards](https://github.com/bhauman/devcards/)
   for a REPL-like UI development experience
 * testing
@@ -99,18 +101,32 @@ it currently demonstrates
   [peridot](https://github.com/xeqi/peridot)
   via
   [dynamic binding](https://www.braveclojure.com/zombie-metaphysics/#Dynamic_Binding)
+* [doo](https://github.com/bensu/doo)
+  tests for the frontend
 * client-side routing with
   [bidi](http://github.com/juxt/bidi)
   and
   [accountant](http://github.com/venantius/accountant)
 
 
+##### usage
+
+build the javascript module dependency beforehand
+
+```
+feels$ npm run build
+```
+
+then run `lein repl` from a shell that has access to node
+(in particular, run `nvm use` first if you use `nvm`).
+
+see `feels/dev/user.clj` for the developer interface.
+in particular,
+
+* `(go)` starts the application on port `10555`
+* `(go-devcards)` starts the "visual REPL" on `3449`
+
 ##### status
 
-laying foundations, connecting pipes.
-
-if you'd like to see the [current status of the] emoji creator
-or calendar view, fire up a `lein repl`, run `(go-devcards)`,
-and point the browser to `localhost:3449`.
-for everything else, `(stop)`, `(go)`, and yer port is `10555`
-— but be forewarned: the user experiences are underwhelming.
+the frontend in particular could use some debug,
+more complete tests, and styling

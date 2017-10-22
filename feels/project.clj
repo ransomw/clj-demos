@@ -18,8 +18,10 @@
    [http-kit "2.2.0"]
    [rum "0.10.8"]
    ;; added
+   [org.roman01la/citrus "3.0.0"]
    [devcards "0.2.3"]
    [ring/ring-mock "0.3.1"]
+   [ring-middleware-format "0.7.2"]
    [hickory "0.7.1"]
    [postgresql "9.3-1102.jdbc41"]
    ;; [funcool/clojure.jdbc "0.9.0"]
@@ -31,6 +33,7 @@
    [garden "1.3.2"]
    [com.andrewmcveigh/cljs-time "0.5.0"]
    [clj-time "0.14.0"]
+   [cljs-http "0.1.43"]
    ]
 
   :plugins
@@ -42,7 +45,9 @@
   :min-lein-version "2.6.1"
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"
-                 "styles/clj" "styles/cljs" "styles/cljc"]
+                 "styles/clj" "styles/cljs" "styles/cljc"
+                 "env/prod/cljs"
+                 ]
 
   :test-paths ["test/clj" "test/cljc"]
 
@@ -68,7 +73,9 @@
    [
     {:id "app"
      :source-paths ["src/cljs" "src/cljc" "dev"
-                    "styles/cljs" "styles/cljc"]
+                    "styles/cljs" "styles/cljc"
+                    "env/prod/cljs"
+                    ]
 
      :figwheel {:on-jsload "feels.system/reset"}
 
@@ -90,7 +97,9 @@
 
     {:id "devcards"
      :source-paths  ["src/cljs" "test/cljs" "src/cljc" "test/cljc"
-                     "styles/cljs" "styles/cljc"]
+                     "styles/cljs" "styles/cljc"
+                     "env/prod/cljs"
+                     ]
      :figwheel {:devcards true}
      :compiler
      {
@@ -140,11 +149,11 @@
                    [figwheel-sidecar "0.5.13"]
                    [com.cemerick/piggieback "0.2.2"]
                    [org.clojure/tools.nrepl "0.2.13"]
-                   [lein-doo "0.1.7"]
+                   [lein-doo "0.1.8"]
                    [reloaded.repl "0.2.3"]]
 
     :plugins [[lein-figwheel "0.5.13"]
-              [lein-doo "0.1.7"]]
+              [lein-doo "0.1.8"]]
 
     :source-paths ["dev"]
     :repl-options {:nrepl-middleware
@@ -162,4 +171,6 @@
     }
    }
 
+  ;; increase stack size for e2e test build
+  :jvm-opts ["-Xss16m"]
   )

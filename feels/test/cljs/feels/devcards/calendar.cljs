@@ -17,18 +17,24 @@
 
 (def this-month (time/first-day-of-the-month (time/today)))
 
+(deftest cljs-time-tests
+  (testing "checks on cljs-time api"
+    (is (time/date? this-month))
+    (is (time/date? (time/plus this-month (time/days 3))))
+    ))
+
 (defcard
   "**feels for a month**"
   (rum-mount cal/page)
   {:month this-month
-   :feels (map (fn [num-days]
-                {:day
-                 (time/plus this-month (time/days num-days))
-                 :feel
-                 (zipmap [:happy :sleepy :grumpy]
-                         (repeatedly 3 #(int (rand 11))))
-                 })
-              (range 0 28 4))
+   :feels-coll (map (fn [num-days]
+                      {:date
+                       (time/plus this-month (time/days num-days))
+                       :feels
+                       (zipmap [:happy :sleepy :grumpy]
+                               (repeatedly 3 #(int (rand 11))))
+                       })
+                    (range 0 28 4))
    }
   {:inspect-data true}
   )

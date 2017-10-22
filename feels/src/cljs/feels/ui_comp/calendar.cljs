@@ -123,29 +123,31 @@
          }]))
    ])
 
-(rum/defc page < rum/static [{:keys [month feels]}]
+(rum/defc page <
+  rum/static
+  [{:keys [month feels-coll]}]
   [:div
    [:h3 (str (get-month-str month) " " (str (time/year month)))]
-   [:div
-    [:div {:key "day-labels"
-           :style (garden->react sty/cal-row-header-style)}
-     (for [[key day-str] (keyed-list day-strs)]
-       [:span {:key key} day-str])
-     ]
-    (for [[key some-week] (keyed-list
-                           (partition 7 (padded-days month)))]
-      [:div {:key key
-             :style (garden->react sty/cal-row-body-style)}
-       (for [[key some-day] (keyed-list some-week)]
-         (cal-day {:rkey key :day some-day
-                   :feel
-                   (->> feels
-                        (filter
-                         (fn [{day :day}]
-                           (time/equal? day some-day)
-                           ))
-                        first :feel)
-                   }))
-       ])
+   [:div {:key "day-labels"
+          :style (garden->react sty/cal-row-header-style)}
+    (for [[key day-str] (keyed-list day-strs)]
+      [:span {:key key} day-str])
     ]
+   (for [[key some-week] (keyed-list
+                          (partition 7 (padded-days month)))]
+     [:div {:key key
+            :style (garden->react sty/cal-row-body-style)}
+      (for [[key some-day] (keyed-list some-week)]
+        (let [feel (->> feels-coll
+                        (filter
+                         (fn [{day :date}]
+                           (and day some-day
+                                (time/equal? day some-day))
+                           ))
+                        first :feels)]
+          (cal-day {:rkey key :day some-day
+                    :feel feel
+                    })
+          ))
+      ])
    ])

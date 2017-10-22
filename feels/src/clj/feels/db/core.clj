@@ -31,8 +31,21 @@
   (user/get-user (:connection db) name)
   )
 
-(defn add-feels! [db user-id feels]
-  (feels/add-feels (:connection db) user-id feels))
+;; (defn add-feels! [db user-id feels]
+;;   (feels/add-feels (:connection db) user-id feels))
 
 (defn get-feels [db user-id]
   (feels/get-feels (:connection db) user-id))
+
+(defn get-today-feels [db user-id]
+  (-> (feels/get-today-feels (:connection db) user-id)
+      (dissoc :id)
+      ))
+
+(defn set-today-feels! [db user-id feels]
+  (let [{feels-id :id
+         } (feels/get-today-feels (:connection db) user-id)]
+    (if feels-id
+      (feels/update-feels (:connection db) feels-id feels)
+      (feels/add-feels (:connection db) user-id feels))
+    ))

@@ -14,6 +14,6 @@ ORDER BY created_at
 LIMIT 1;
 
 -- :name update-feels :! :n
-UPDATE expone_mcg
+UPDATE feels
 SET (happy, sleepy, grumpy) = (:happy, :sleepy, :grumpy)
 WHERE id = :feels-id;

@@ -1,9 +1,11 @@
 (ns user
   (:require
+   [clojure.repl :refer [doc]]
    [com.stuartsierra.component :as component]
    [figwheel-sidecar.config :as fw-config]
    [figwheel-sidecar.system :as fw-sys]
-   [clojure.tools.namespace.repl :refer [set-refresh-dirs]]
+   [clojure.tools.namespace.repl
+    :refer [set-refresh-dirs refresh refresh-all]]
    [reloaded.repl :refer [system init]]
    [ring.middleware.reload :refer [wrap-reload]]
    [figwheel-sidecar.repl-api :as figwheel]
@@ -14,6 +16,7 @@
    [feels.config :refer [config]]
    [feels.routes-test]
    [feels.db-test]
+   [feels.e2e-test]
    ))
 
 (defn dev-system []
@@ -69,13 +72,20 @@
   (cljs-repl))
 
 (defn run-all-tests [& opts]
-  (map (fn [test-ns]
-         (if (contains? (set opts) :reload)
-           (do (println "loading" test-ns)
-               (require test-ns :reload-all)))
-           (run-tests test-ns))
-       [
-        'feels.db-test
-        'feels.routes-test
-        ])
+  (do
+    (stop)
+    ;; refresh-all in case of sql changes
+    (refresh-all)
+    (map run-tests
+         [
+          'feels.e2e-test
+          'feels.db-test
+          'feels.routes-test
+          ])
+    ))
+
+(defn cljs-clean []
+  (figwheel/start-figwheel!)
+  (figwheel/clean-builds)
+  (figwheel/stop-figwheel!)
   )
