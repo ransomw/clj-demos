@@ -1,25 +1,18 @@
 (ns setsail.db.core
   (:require
-   [clojure.java.jdbc :as jdbc]
-   [setsail.config :refer [db-spec]]
    [setsail.db.thingone :as thingone]
    ))
 
-(defn reset-db! []
-  (thingone/drop-table db-spec)
-  (thingone/create-table db-spec))
+(defn reset-db! [db]
+  (thingone/drop-table (:connection db))
+  (thingone/create-table (:connection db))
+  )
 
 ;; returns number of rows inserted
-(defn add-a-thingone! [name]
-  (first ;; exactly one row is inserted
-   (jdbc/execute!
-    db-spec
-    (thingone/add-a-thing name))
-   ))
+(defn add-a-thingone! [db name]
+  (thingone/add-a-thing (:connection db) name)
+  )
 
-(defn all-the-thingone-names []
-  (map
-   :nameone
-   (jdbc/query
-    db-spec
-    (thingone/all-the-names))))
+(defn all-the-thingone-names [db]
+  (thingone/all-the-names (:connection db))
+  )

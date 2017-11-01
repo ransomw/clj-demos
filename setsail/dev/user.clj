@@ -1,80 +1,79 @@
 (ns user
   (:require
-   [setsail.server]
-   [ring.middleware.reload :refer [wrap-reload]]
+   [clojure.repl :refer [doc]]
+   [clojure.tools.namespace.repl
+    :refer [set-refresh-dirs refresh refresh-all]]
+   [com.stuartsierra.component :as component]
+   [reloaded.repl :refer [system init]]
    [figwheel-sidecar.repl-api :as figwheel]
-   [figwheel-sidecar.config :as figwheel-config]
-   [clojure.java.io :as io]
+   [figwheel-sidecar.config :as fw-config]
+   [figwheel-sidecar.system :as fw-sys]
 
-   [garden-build.core :refer [start-build! stop-build!]
-    :rename {start-build! start-css-build!
-             stop-build! stop-css-build!}]
+   [garden-build.component :refer [new-garden-build]]
+   [setsail.application]
+   [setsail.config :refer [config]]
+   [setsail.db.core :refer [reset-db!]]
    ))
 
-;; Let Clojure warn you when it needs to reflect on types, or when it does math
-;; on unboxed numbers. In both cases you should add type annotations to prevent
-;; degraded performance.
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* :warn-on-boxed)
-(def http-handler
-  (wrap-reload #'setsail.server/http-handler))
 
-(defn run []
-  (start-css-build!
-   {:source-paths ["styles/clj/" "styles/cljc"]
-    :style-ns 'styles.setsail.core
-    }
-   {
-    :output-to "resources/public/css/compiled/garden-main.css"
-    :pretty-print? true
-    })
-  (figwheel/start-figwheel!
-   (merge
-    (get-in (figwheel-config/fetch-config) [:data :figwheel-options])
-    {:builds (figwheel-config/get-project-builds)
-     :ring-handler 'user/http-handler
-     :builds-to-start ["app"]}
+(defn dev-system []
+  (assoc (setsail.application/app-system (config))
+    :figwheel-system (fw-sys/figwheel-system (fw-config/fetch-config))
+    :css-watcher (fw-sys/css-watcher
+                  {:watch-paths ["resources/public/css"]})
+    :garden-build
+    (new-garden-build
+     {:source-paths ["styles/clj/" "styles/cljc"]
+      :style-ns 'styles.setsail.core
+      }
+     {
+      :output-to "resources/public/css/compiled/garden-main.css"
+      :pretty-print? true
+      })
     ))
-   )
 
-(def browser-repl figwheel/cljs-repl)
+(defn devcards-system []
+  (assoc
+   (setsail.application/app-system (config))
+   :figwheel-system
+   (fw-sys/figwheel-system
+    (-> (fw-config/fetch-config)
+        (update-in
+         [:data :figwheel-options]
+         #(merge % {:http-server-root "devcards"}))
+        (update-in
+         [:data]
+         #(merge % {:build-ids ["devcards"]}))
+        )
+    )))
 
-(defn run-devcards []
-  (figwheel/start-figwheel!
-   {:builds (figwheel-config/get-project-builds)
-    :http-server-root "devcards"
-    :css-dirs ["resources/public/css"]
-    :builds-to-start ["devcards"]}
-   ))
+(set-refresh-dirs "src" "dev" "test")
 
-(defn build-cljs []
-  (figwheel/clean-builds :app :devcards))
+(defn connect-and-reset-db! []
+  (let [db (-> (config)
+               setsail.application/app-system
+               :db component/start)]
+    (reset-db! db)
+    (component/stop db)
+    ))
 
-(defn stop []
-  (stop-css-build!)
-  (figwheel/stop-figwheel!))
+(defn cljs-repl []
+  (fw-sys/cljs-repl (:figwheel-system system)))
 
-;; this could be placed in ns declaration?
-(defn init-require []
-  (require 'setsail.routes.helpers :reload)
-  (require 'setsail.routes.core :reload)
-  (require '(setsail.db [core :as db]) :reload)
+(def stop reloaded.repl/stop)
+(defn go []
+  (reloaded.repl/set-init! #(dev-system))
+  (reloaded.repl/go))
+(defn go-devcards []
+  (reloaded.repl/set-init! #(devcards-system))
+  (reloaded.repl/go))
+
+(defn cljs-clean []
+  (figwheel/start-figwheel!)
+  (figwheel/clean-builds :app :devcards)
+  (figwheel/stop-figwheel!)
   )
 
-(init-require)
-
-(defn reload-require []
-  (require 'user :reload)
-  (require 'setsail.routes.helpers :reload)
-  (require 'setsail.routes.core :reload)
-  (require 'setsail.db.core :reload)
-  (require 'garden-build.core :reload)
-  )
-
-(def rreq reload-require)
-(def rdb db/reset-db!)
-(def brep browser-repl)
-
-(defn enter-ns [namespace]
-  (require namespace :reload-all)
-  (in-ns namespace))
+(def rdb connect-and-reset-db!)

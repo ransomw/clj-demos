@@ -1,23 +1,18 @@
 (ns setsail.db.thingone
-
   (:require
    [hugsql.core :as hugsql]
-   [honeysql.core :as sql]
-   [honeysql.helpers :refer :all]
+
+   [setsail.db.thingone-hug :as hug]
    ))
 
-(hugsql/def-db-fns "setsail/db/thingone.sql")
-(hugsql/def-sqlvec-fns "setsail/db/thingone.sql")
+(hugsql/def-db-fns "setsail/db/thingone_schema.sql")
+(hugsql/def-sqlvec-fns "setsail/db/thingone_schema.sql")
 
-(defn add-a-thing [name]
-  (-> (insert-into :thingone)
-      (values [{:nameone name}])
-      sql/format)
+(defn add-a-thing [db name]
+  (-> (hug/add-a-thing db {:nameone name})
+      first :id)
   )
 
-(defn all-the-names []
-  (sql/format
-   {
-    :select [:nameone]
-    :from [:thingone]
-    }))
+(defn all-the-names [db]
+  (map :nameone (hug/all-the-names db))
+  )

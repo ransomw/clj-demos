@@ -7,7 +7,8 @@ Clojure project templates and sandboxing
 extracted from [emo-mcg](http://github.com/ransomw/emo-mcg),
 this project was originally derived from the
 [Chestnut](http://github.com/plexus/chestnut) 0.14.0 (66af6f40)
-template.
+template and later updated to use
+[component](https://github.com/stuartsierra/component).
 
 it demonstrates
 * backend Create and Read with
@@ -41,14 +42,9 @@ it demonstrates
   [Om](https://github.com/omcljs/om)
   React wrapper
 
-it is _not_ suitable as an application template due to (at least)
-* patterns for [figwheel](http://github.com/bhauman/lein-figwheel)
-  reloading
-* remaining cruft (e.g. `project.clj`) from the original extraction
-
 to give it a spin,
 check your database setup against
-`setsail/env/test/clj/setsail/config.clj`,
+`setsail/src/clj/setsail/config.clj`,
 make certain
 [leiningen](http://leiningen.org)
 is installed, and at the repl prompt offered by
@@ -61,12 +57,12 @@ run the functions defined in `dev/user.clj`
 
 ```
 (rdb)
-(run)
+(go)
 ```
 
 to reset the database and run the application via
 [figwheel](http://github.com/bhauman/lein-figwheel).
-then point a browser to `localhost:3449`.
+then point a browser to `localhost:10555`.
 
 ### `feels/`
 
